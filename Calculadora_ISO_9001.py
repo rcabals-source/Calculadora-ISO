@@ -87,7 +87,7 @@ if 'meses_totales' in st.session_state:
 
     if meses > 12:
         st.error(f"**Estimación: {meses} meses**")
-        st.warning("⚠️ **Atención:** Un proyecto de más de 24 meses tiene un alto riesgo de fracasar. Te recomendamos reevaluar las condiciones o buscar ayuda experta para optimizar el plan.")
+        st.warning("⚠️ **Atención:** Un proyecto de más de 12 meses tiene un alto riesgo de fracasar. Te recomendamos reevaluar las condiciones o buscar ayuda experta para optimizar el plan.")
     else:
         st.success(f"**El tiempo estimado para la implementación es de {meses} meses.**")
         st.metric(label="Tiempo Estimado", value=f"{meses} Meses")
@@ -124,3 +124,4 @@ if 'meses_totales' in st.session_state:
                 # NOTA: En una app real, aquí iría el código para enviar esta información
                 # a una base de datos, un CRM o por correo electrónico.
                 # Como Streamlit es 'frontend', solo mostramos un mensaje de éxito.
+
