@@ -62,7 +62,7 @@ puntos_empleados = {'1 a 20': 2, '21 a 50': 4, '51 a 100': 6, '101 a 500': 8, '5
 puntos_sedes = {'1': 0, '2 a 5': 2, '6 a 20': 4, '21 o más': 6}
 puntos_docs = {'No, no tenemos información documentada.': 4, 'Sí, pero solo alguna información (listas de chequeo, instructivos, etc.).': 2, 'Sí, la mayoría de nuestra información relevante está documentada.': 0}
 puntos_consultor = {'No, lo haremos por nuestra cuenta.': 4, 'Solo para algunas partes del proyecto.': 2, 'Sí, para todo el proyecto.': 0}
-puntos_encargado = {'No, las tareas se asignarán sobre la marcha.': 6, 'Sí, una persona сon poca experiencia en proyectos, en su tiempo libre.': 4, 'Sí, una persona сon experiencia, pero que está bastante ocupada.': 2, 'Sí, un gestor de proyectos сon experiencia y tiempo dedicado.': 0}
+puntos_encargado = {'No, las tareas se asignarán sobre la marcha.': 6, 'Sí, una persona сon poca experiencia en proyectos, en su tiempo libre.': 4, 'Sí, una persona сon experiencia, pero que está bastante ocupada.': 2, 'No, queremos que el consultor lo vea todo.': 0}
 puntos_gerencia = {'No, el proyecto es una iniciativa de niveles inferiores.': 6, 'Nominalmente sí, pero no comprenden que deben participar e invertir recursos.': 3, 'Sí, la gerencia tiene objetivos claros y conoce los compromisos requeridos.': 0}
 puntos_diseno = {'No, nuestra empresa no diseña ni desarrolla productos/servicios.': 0, 'Sí, nuestro negocio incluye el proceso de diseño y desarrollo.': 3}
 
@@ -85,9 +85,9 @@ if 'meses_totales' in st.session_state:
     meses = st.session_state.meses_totales
     st.header("Resultado de la Estimación")
 
-    if meses > 24:
+    if meses > 12:
         st.error(f"**Estimación: {meses} meses**")
-        st.warning("⚠️ **Atención:** Un proyecto de más de 24 meses tiene un alto riesgo de fracasar. Te recomendamos reevaluar las condiciones o buscar ayuda experta para optimizar el plan.")
+        st.warning("⚠️ **Atención:** Un proyecto de más de 12 meses tiene un alto riesgo de fracasar. Te recomendamos reevaluar las condiciones o buscar ayuda experta para optimizar el plan.")
     else:
         st.success(f"**El tiempo estimado para la implementación es de {meses} meses.**")
         st.metric(label="Tiempo Estimado", value=f"{meses} Meses")
@@ -97,7 +97,7 @@ if 'meses_totales' in st.session_state:
     st.header("¿Quieres dar el siguiente paso?")
     st.write("Obtén una cotización detallada o agenda una reunión de 30 minutos sin costo para discutir tu proyecto.")
     
-    st.link_button("🗓️ **Agendar una Reunión Ahora**", "https://calendly.com/rcabals/30min", type="primary")
+    st.link_button("🗓️ **Agenda una reunión con Asesorías Cabal**", "https://calendly.com/rcabals/30min", type="primary")
 
     st.write("--- O ---")
     
@@ -107,26 +107,36 @@ if 'meses_totales' in st.session_state:
         FORMSPREE_ENDPOINT = "https://formspree.io/f/mwpnwlrj"
 
         nombre = st.text_input("Tu Nombre Completo")
+        empresa = st.text_input("Nombre de tu Empresa")
         email = st.text_input("Tu Correo Electrónico")
         telefono = st.text_input("Tu Teléfono (Ej: +56912345678)")
         
         submitted = st.form_submit_button("✅ Enviar y Solicitar Cotización")
 
         if submitted:
-            if not nombre or not email or not telefono:
+            if not nombre or not empresa or not email or not telefono:
                 st.warning("Por favor, completa todos los campos.")
             elif not re.match(r"[^@]+@[^@]+\.[^@]+", email):
                 st.warning("Por favor, introduce un correo electrónico válido.")
             else:
-                # Lógica para enviar a Formspree
                 try:
+                    # 1. OBTENEMOS EL RESULTADO DE LA MEMORIA DE LA SESIÓN
+                    meses_calculados = st.session_state.get('meses_totales', 'No calculado')
+                    
+                    # 2. AÑADIMOS LOS MESES A LOS DATOS QUE SE ENVÍAN
                     response = requests.post(
                         FORMSPREE_ENDPOINT,
                         headers={"Accept": "application/json"},
-                        data={"nombre": nombre, "email": email, "telefono": telefono}
+                        data={
+                            "nombre": nombre, 
+                            "empresa": empresa, 
+                            "email": email, 
+                            "telefono": telefono,
+                            "meses_estimados": meses_calculados
+                        }
                     )
                     if response.status_code == 200:
-                        st.success("¡Gracias! Tu solicitud ha sido enviada con éxito. Te contactaremos a la brevedad.")
+                        st.success("¡Gracias! Tu solicitud ha sido enviada. Te contactaremos a la brevedad.")
                         st.balloons()
                     else:
                         st.error("Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.")
