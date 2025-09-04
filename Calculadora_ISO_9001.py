@@ -1,5 +1,6 @@
 import streamlit as st
-import re # Importamos la librería para validaciones
+import re
+import requests # Librería para hacer peticiones web
 
 # --- Configuración de la página ---
 st.set_page_config(
@@ -9,18 +10,16 @@ st.set_page_config(
 
 # --- Título y Descripción ---
 st.title('⏱️ Calculadora de Tiempo para Implementación ISO 9001:2015')
-st.markdown("""
-Esta calculadora te ayudará a estimar el tiempo necesario para tu proyecto de implementación de la Norma ISO 9001.
-
-**Importante:** Por favor, introduce los datos considerando únicamente el **alcance de tu SGC (Sistema de Gestión de la Calidad)**.
-""")
+st.markdown("...") # El resto de tu descripción va aquí
 
 # --- Cuestionario ---
+# (Aquí va todo el código del cuestionario que no ha cambiado)
+# ...
 st.header("Cuestionario del Proyecto")
 
 opciones_empleados = ('1 a 20', '21 a 50', '51 a 100', '101 a 500', '501 o más')
 respuesta_empleados = st.selectbox('Número de empleados dentro del alcance:', opciones_empleados)
-
+# ... (el resto de tus selectbox)
 opciones_sedes = ('1', '2 a 5', '6 a 20', '21 o más')
 respuesta_sedes = st.selectbox('Número de sedes físicas:', opciones_sedes)
 
@@ -59,16 +58,17 @@ opciones_diseno = (
 )
 respuesta_diseno = st.selectbox('¿Tu negocio incluye diseño y desarrollo de productos o servicios?', opciones_diseno)
 
-puntos_empleados = {'1 a 20': 1, '21 a 50': 2, '51 a 100': 6, '101 a 500': 8, '501 o más': 10}
+puntos_empleados = {'1 a 20': 2, '21 a 50': 4, '51 a 100': 6, '101 a 500': 8, '501 o más': 10}
 puntos_sedes = {'1': 0, '2 a 5': 2, '6 a 20': 4, '21 o más': 6}
-puntos_docs = {'No, no tenemos información documentada.': 3, 'Sí, pero solo alguna información (listas de chequeo, instructivos, etc.).': 1, 'Sí, la mayoría de nuestra información relevante está documentada.': 0}
+puntos_docs = {'No, no tenemos información documentada.': 4, 'Sí, pero solo alguna información (listas de chequeo, instructivos, etc.).': 2, 'Sí, la mayoría de nuestra información relevante está documentada.': 0}
 puntos_consultor = {'No, lo haremos por nuestra cuenta.': 4, 'Solo para algunas partes del proyecto.': 2, 'Sí, para todo el proyecto.': 0}
-puntos_encargado = {'No, las tareas se asignarán sobre la marcha.': 4, 'Sí, una persona сon poca experiencia en proyectos, en su tiempo libre.': 3, 'Sí, una persona сon experiencia, pero que está bastante ocupada.': 2, 'Sí, un gestor de proyectos сon experiencia y tiempo dedicado.': 0}
+puntos_encargado = {'No, las tareas se asignarán sobre la marcha.': 6, 'Sí, una persona сon poca experiencia en proyectos, en su tiempo libre.': 4, 'Sí, una persona сon experiencia, pero que está bastante ocupada.': 2, 'Sí, un gestor de proyectos сon experiencia y tiempo dedicado.': 0}
 puntos_gerencia = {'No, el proyecto es una iniciativa de niveles inferiores.': 6, 'Nominalmente sí, pero no comprenden que deben participar e invertir recursos.': 3, 'Sí, la gerencia tiene objetivos claros y conoce los compromisos requeridos.': 0}
-puntos_diseno = {'No, nuestra empresa no diseña ni desarrolla productos/servicios.': 0, 'Sí, nuestro negocio incluye el proceso de diseño y desarrollo.': 1}
+puntos_diseno = {'No, nuestra empresa no diseña ni desarrolla productos/servicios.': 0, 'Sí, nuestro negocio incluye el proceso de diseño y desarrollo.': 3}
 
-# --- Botón de Cálculo y Visualización del Resultado ---
+
 if st.button('**Calcular Tiempo Estimado**', type="primary"):
+    # ... (cálculo de meses_totales igual que antes)
     meses_totales = 0
     meses_totales += puntos_empleados[respuesta_empleados]
     meses_totales += puntos_sedes[respuesta_sedes]
@@ -77,35 +77,35 @@ if st.button('**Calcular Tiempo Estimado**', type="primary"):
     meses_totales += puntos_encargado[respuesta_encargado]
     meses_totales += puntos_gerencia[respuesta_gerencia]
     meses_totales += puntos_diseno[respuesta_diseno]
+    st.session_state.meses_totales = meses_totales
 
-    st.session_state.meses_totales = meses_totales # Guardamos el resultado en el estado de la sesión
 
-# --- Mostrar el resultado si ya fue calculado ---
 if 'meses_totales' in st.session_state:
+    # ... (código para mostrar el resultado igual que antes)
     meses = st.session_state.meses_totales
     st.header("Resultado de la Estimación")
 
-    if meses > 12:
+    if meses > 24:
         st.error(f"**Estimación: {meses} meses**")
-        st.warning("⚠️ **Atención:** Un proyecto de más de 12 meses tiene un alto riesgo de fracasar. Te recomendamos reevaluar las condiciones o buscar ayuda experta para optimizar el plan.")
+        st.warning("⚠️ **Atención:** Un proyecto de más de 24 meses tiene un alto riesgo de fracasar. Te recomendamos reevaluar las condiciones o buscar ayuda experta para optimizar el plan.")
     else:
         st.success(f"**El tiempo estimado para la implementación es de {meses} meses.**")
         st.metric(label="Tiempo Estimado", value=f"{meses} Meses")
 
     st.markdown("---")
     
-    # --- NUEVA SECCIÓN: LLAMADO A LA ACCIÓN ---
     st.header("¿Quieres dar el siguiente paso?")
     st.write("Obtén una cotización detallada o agenda una reunión de 30 minutos sin costo para discutir tu proyecto.")
-
-    # Opción 1: Agendar en Calendly
+    
     st.link_button("🗓️ **Agendar una Reunión Ahora**", "https://calendly.com/rcabals/30min", type="primary")
 
     st.write("--- O ---")
     
-    # Opción 2: Formulario de Cotización
     st.subheader("Solicita una Cotización")
-    with st.form("cotizacion_form"):
+    with st.form("cotizacion_form", clear_on_submit=True):
+        # CAMBIO IMPORTANTE: Pega tu URL de Formspree aquí abajo
+        FORMSPREE_ENDPOINT = "https://formspree.io/f/mwpnwlrj"
+
         nombre = st.text_input("Tu Nombre Completo")
         email = st.text_input("Tu Correo Electrónico")
         telefono = st.text_input("Tu Teléfono (Ej: +56912345678)")
@@ -113,15 +113,22 @@ if 'meses_totales' in st.session_state:
         submitted = st.form_submit_button("✅ Enviar y Solicitar Cotización")
 
         if submitted:
-            # Validación simple
             if not nombre or not email or not telefono:
                 st.warning("Por favor, completa todos los campos.")
             elif not re.match(r"[^@]+@[^@]+\.[^@]+", email):
                 st.warning("Por favor, introduce un correo electrónico válido.")
             else:
-                st.success(f"¡Gracias, {nombre}! Hemos recibido tu solicitud. Te contactaremos a la brevedad en **{email}** o al teléfono **{telefono}**.")
-                st.balloons()
-                # NOTA: En una app real, aquí iría el código para enviar esta información
-                # a una base de datos, un CRM o por correo electrónico.
-                # Como Streamlit es 'frontend', solo mostramos un mensaje de éxito.
-
+                # Lógica para enviar a Formspree
+                try:
+                    response = requests.post(
+                        FORMSPREE_ENDPOINT,
+                        headers={"Accept": "application/json"},
+                        data={"nombre": nombre, "email": email, "telefono": telefono}
+                    )
+                    if response.status_code == 200:
+                        st.success("¡Gracias! Tu solicitud ha sido enviada con éxito. Te contactaremos a la brevedad.")
+                        st.balloons()
+                    else:
+                        st.error("Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.")
+                except Exception as e:
+                    st.error(f"Ocurrió un error de conexión: {e}")
