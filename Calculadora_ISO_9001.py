@@ -58,13 +58,13 @@ opciones_diseno = (
 )
 respuesta_diseno = st.selectbox('¿Tu negocio incluye diseño y desarrollo de productos o servicios?', opciones_diseno)
 
-puntos_empleados = {'1 a 20': 2, '21 a 50': 4, '51 a 100': 6, '101 a 500': 8, '501 o más': 10}
+puntos_empleados = {'1 a 20': 1, '21 a 50': 2, '51 a 100': 6, '101 a 500': 8, '501 o más': 10}
 puntos_sedes = {'1': 0, '2 a 5': 2, '6 a 20': 4, '21 o más': 6}
-puntos_docs = {'No, no tenemos información documentada.': 4, 'Sí, pero solo alguna información (listas de chequeo, instructivos, etc.).': 2, 'Sí, la mayoría de nuestra información relevante está documentada.': 0}
+puntos_docs = {'No, no tenemos información documentada.': 4, 'Sí, pero solo alguna información (listas de chequeo, instructivos, etc.).': 1, 'Sí, la mayoría de nuestra información relevante está documentada.': 0}
 puntos_consultor = {'No, lo haremos por nuestra cuenta.': 4, 'Solo para algunas partes del proyecto.': 2, 'Sí, para todo el proyecto.': 0}
 puntos_encargado = {'No, las tareas se asignarán sobre la marcha.': 6, 'Sí, una persona сon poca experiencia en proyectos, en su tiempo libre.': 4, 'Sí, una persona сon experiencia, pero que está bastante ocupada.': 2, 'No, queremos que el consultor lo vea todo.': 0}
 puntos_gerencia = {'No, el proyecto es una iniciativa de niveles inferiores.': 6, 'Nominalmente sí, pero no comprenden que deben participar e invertir recursos.': 3, 'Sí, la gerencia tiene objetivos claros y conoce los compromisos requeridos.': 0}
-puntos_diseno = {'No, nuestra empresa no diseña ni desarrolla productos/servicios.': 0, 'Sí, nuestro negocio incluye el proceso de diseño y desarrollo.': 3}
+puntos_diseno = {'No, nuestra empresa no diseña ni desarrolla productos/servicios.': 0, 'Sí, nuestro negocio incluye el proceso de diseño y desarrollo.': 1}
 
 
 if st.button('**Calcular Tiempo Estimado**', type="primary"):
@@ -142,4 +142,5 @@ if 'meses_totales' in st.session_state:
                         st.error("Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.")
                 except Exception as e:
                     st.error(f"Ocurrió un error de conexión: {e}")
+
 
