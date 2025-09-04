@@ -41,7 +41,7 @@ opciones_encargado = (
     'No, las tareas se asignarán sobre la marcha.',
     'Sí, una persona сon poca experiencia en proyectos, en su tiempo libre.',
     'Sí, una persona сon experiencia, pero que está bastante ocupada.',
-    'Sí, un gestor de proyectos сon experiencia y tiempo dedicado.'
+    'No, queremos que el consultor lo vea todo.'
 )
 respuesta_encargado = st.selectbox('¿Tienes un empleado que coordinará y gestionará este proyecto?', opciones_encargado)
 
@@ -142,3 +142,4 @@ if 'meses_totales' in st.session_state:
                         st.error("Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.")
                 except Exception as e:
                     st.error(f"Ocurrió un error de conexión: {e}")
+
